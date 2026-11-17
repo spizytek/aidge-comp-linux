@@ -1,0 +1,9 @@
+aidge_core
+aidge_backend_cpu
+aidge_backend_cuda
+aidge_backend_opencv
+aidge_export_cpp
+aidge_export_arm_cortexm
+aidge_learning
+aidge_onnx
+aidge_quantization

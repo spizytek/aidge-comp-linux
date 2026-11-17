@@ -1,0 +1,295 @@
+================================================================================
+FIX REPORT - ./locod.sh -t pynqz2 -f /home/techist/AidgeComp/test_locod.c
+================================================================================
+
+Final result: EXIT=0, with the following outputs produced:
+  locod-output/fpga.bit   4,045,765 bytes
+  locod-output/fpga.bin   4,045,564 bytes
+  locod-output/locod-cpu    102,520 bytes
+
+All paths below are relative to /home/techist/AidgeComp/LoCod unless stated
+otherwise.
+
+--------------------------------------------------------------------------------
+1. EMPTY submodules/locod-fpga (MISSING PINNED COMMIT)
+--------------------------------------------------------------------------------
+
+Issue:
+  The parent repo pinned submodule commit d868eda213ffecc26a1e5928fdfc550099ddf9c8,
+  which no longer exists in viveris/locod-fpga (repository force-pushed; the
+  GitHub API returns 422, and there are no forks or PR refs containing it).
+  As a result the submodule working tree was empty and locod.sh failed at the
+  first copy into submodules/locod-fpga/src/generated_files/. The Pynq-Z2
+  target directory did not exist at all.
+
+Fix:
+  Checked out the only surviving upstream commit, 3266f63 (tag 1.0), and
+  reconstructed the Pynq-Z2 target from scratch.
+
+Files created (new):
+
+  submodules/locod-fpga/xilinx/generate_vivado_project.tcl, lines 81-83
+  - register the target in the switch:
+
+      pynqz2 {
+          source pynqz2/configure_project_pynqz2.tcl
+      }
+
+  submodules/locod-fpga/xilinx/pynqz2/configure_project_pynqz2.tcl, lines 33-47
+  - part, sources, top and block design:
+
+      set_property part xc7z020clg400-1 [current_project]      # line 33
+      add_files { pynqz2/src/top_pynqz2.vhd }                  # line 39
+      set_property top top_pynqz2 [current_fileset]            # line 43
+      source pynqz2/scripts/create_bd_soc_wrapper_pynqz2.tcl   # line 47
+
+  submodules/locod-fpga/xilinx/pynqz2/ps7_config.tcl
+  - full PS7 configuration; key lines:
+
+      CONFIG.PCW_DDR_RAM_HIGHADDR {0x1FFFFFFF}      # line 53  -> 512 MB DDR
+      CONFIG.PCW_FPGA0_PERIPHERAL_FREQMHZ {100}     # line 142 -> pl_clk0 100 MHz
+      CONFIG.PCW_M_AXI_GP0_ID_WIDTH {12}            # line 332
+      CONFIG.PCW_USE_M_AXI_GP0 {1}                  # line 577
+      CONFIG.PCW_USE_S_AXI_HP0 {1}                  # line 584
+      CONFIG.PCW_S_AXI_HP0_DATA_WIDTH {64}          # line 585
+      CONFIG.PCW_S_AXI_HP0_ID_WIDTH {6}             # line 586
+
+  submodules/locod-fpga/xilinx/pynqz2/scripts/create_bd_soc_wrapper_pynqz2.tcl,
+  lines 109-111
+  - address map matching locod-core/src/pynqz2_defs.h:
+
+      assign_bd_address -offset 0x43C00000 -range 0x00010000 -target_address_space [get_bd_addr_spaces ps7/Data] [get_bd_addr_segs M_AXI_GP0/Reg] -force
+      assign_bd_address -offset 0x00000000 -range 0x20000000 -target_address_space [get_bd_addr_spaces S_AXI_HP0] [get_bd_addr_segs ps7/S_AXI_HP0/HP0_DDR_LOWOCM] -force
+
+  submodules/locod-fpga/xilinx/pynqz2/src/top_pynqz2.vhd, lines 47-55 and 147-150
+  - bus widths and AXI3 adaptation around locod_top:
+
+      constant S_AXI_ID_WIDTH     : integer := 12;                          -- line 47
+      constant M_AXI_DATA_WIDTH   : integer := 64;                          -- line 51
+      constant BASE_ADDRESS : std_logic_vector(AXIL_ADDR_WIDTH-1 downto 0)
+                            := x"43C00000";                                 -- line 55
+      ...
+      S_AXI_awlen  <= "0000" & gp0_awlen;                                   -- line 147
+      S_AXI_awlock <= gp0_awlock(0);                                        -- line 149
+
+  - BD-side truncation of the AXI3-only fields (top_pynqz2.vhd):
+
+      S_AXI_HP0_awlen => M_AXI_awlen(3 downto 0),                           -- line 291
+      S_AXI_HP0_wid   => M_AXI_awid,                                        -- line 300
+
+--------------------------------------------------------------------------------
+2. fpga.bin WAS NEVER GENERATED
+--------------------------------------------------------------------------------
+
+Issue:
+  generate_vivado_project.tcl called "write_bitstream -force fpga.bit", which
+  writes only the .bit file. locod.sh line 390 then runs "cp fpga.bin ...", so
+  the run died at the last step with "cp: cannot stat 'fpga.bin'" and EXIT=1,
+  even though the bitstream itself was valid.
+
+Fix:
+  Also emit the .bin file.
+
+  submodules/locod-fpga/xilinx/generate_vivado_project.tcl, line 103:
+
+      write_bitstream -force -bin_file fpga.bit
+
+  This matches README.md line 193, which documents loading with
+  "fpgautil -b fpga.bin".
+
+--------------------------------------------------------------------------------
+3. HARDCODED AXI AxSIZE IN THE AXIL->AXI ADAPTER
+--------------------------------------------------------------------------------
+
+Issue:
+  axil_axi_adapter.vhd emitted AxSIZE = "100" (16 bytes per beat) on both the
+  AW and AR channels, regardless of AXI_DATA_WIDTH. That encoding is only valid
+  for a 128-bit bus; the Pynq-Z2 memory path is 64-bit, so the PS7 was told each
+  beat was twice as wide as it really is, which corrupts burst address
+  advancement.
+
+Fix:
+  Added a width-to-encoding function and used it at both call sites.
+
+  submodules/locod-fpga/src/axil_axi_adapter/rtl/axil_axi_adapter.vhd,
+  lines 141-155 (new function):
+
+      function axi_size(width : integer) return std_logic_vector is
+      begin
+          case width is
+              when 8   => return "000";
+              when 16  => return "001";
+              when 32  => return "010";
+              when 64  => return "011";
+              when 128 => return "100";
+              when 256 => return "101";
+              when 512 => return "110";
+              when others => return "111";
+          end case;
+      end function;
+
+  Line 213 (was: M_AXI_awsize_o <= "100";):
+
+      M_AXI_awsize_o      <= axi_size(AXI_DATA_WIDTH);
+
+  Line 235 (was: M_AXI_arsize_o <= "100";):
+
+      M_AXI_arsize_o      <= axi_size(AXI_DATA_WIDTH);
+
+--------------------------------------------------------------------------------
+4. CONSTANT ARRAYS SILENTLY ZEROED BY A STALE DOCKER PATH
+--------------------------------------------------------------------------------
+
+Issue:
+  Bambu emitted an absolute container path for the ROM initializer:
+
+      .MEMORY_INIT_file("/workdir/src/array_ref_31101.mem"),   // acc0.v:2644
+
+  locod.sh only stripped the prefix "/workdir/bambu/", so this path survived.
+  Vivado could not open it and reported:
+
+      CRITICAL WARNING: [Synth 8-4445] could not open $readmem data file
+      '/workdir/src/array_ref_31101.mem'; please make sure the file is added to
+      project and has read permission, ignoring
+
+  Synthesis continued, but pascal_matrix (512 x 16-bit words) was initialized to
+  zeros, so the FPGA result would differ from the CPU reference at runtime. The
+  .mem file itself was already being copied correctly into src/generated_files/.
+
+Fix:
+  Also rewrite "/workdir/src/" to the real local directory.
+
+  locod.sh, line 325
+  (was: sed -i 's|/workdir/bambu/||g' ${LOCOD_FPGA_DIR}/src/generated_files/${ACC}.v):
+
+      sed -i -e 's|/workdir/bambu/||g' -e "s|/workdir/src/|${LOCOD_FPGA_DIR}/src/generated_files/|g" ${LOCOD_FPGA_DIR}/src/generated_files/${ACC}.v
+
+  Verified in the final log:
+
+      INFO: [Synth 8-3876] $readmem data file
+      '.../src/generated_files/array_ref_31101.mem' is read successfully
+
+--------------------------------------------------------------------------------
+5. BLOCK-DESIGN CLOCK/RESET ASSOCIATION WARNINGS
+--------------------------------------------------------------------------------
+
+Issue:
+  validate_bd_design reported:
+
+      CRITICAL WARNING: [BD 41-2559] AXI interface port /M_AXI_GP0 is not
+      associated to any clock port. It may not work correctly. ...
+      CRITICAL WARNING: [BD 41-2559] AXI interface port /S_AXI_HP0 is not
+      associated to any clock port. It may not work correctly. ...
+
+  These are non-fatal, but the external AXI interfaces were left without a
+  declared clock/reset association, so timing and reset behavior were not tied
+  to pl_clk0 / peripheral_aresetn.
+
+Fix:
+
+  submodules/locod-fpga/xilinx/pynqz2/scripts/create_bd_soc_wrapper_pynqz2.tcl,
+  lines 88-93:
+
+      create_bd_port -dir O -type clk pl_clk0
+      create_bd_port -dir O -from 0 -to 0 -type rst peripheral_aresetn
+      set_property -dict [list \
+          CONFIG.ASSOCIATED_BUSIF {M_AXI_GP0:S_AXI_HP0} \
+          CONFIG.ASSOCIATED_RESET {peripheral_aresetn} \
+      ] [get_bd_ports pl_clk0]
+
+  Both BD 41-2559 warnings are absent from the final run.
+
+--------------------------------------------------------------------------------
+REMAINING (BENIGN) MESSAGES
+--------------------------------------------------------------------------------
+
+  - PSU-1 / PSU-2 negative DDR DQS-to-clock delays: these values come from
+    Digilent's own PYNQ-Z2 board timing and also appear in stock presets.
+  - Netlist 29-160 "... property does not exist for objects of type 'pin'":
+    the PS7 IP's internal XDC applied to dedicated (non-PL) PS pins; it has no
+    effect on the generated bitstream.
+
+--------------------------------------------------------------------------------
+CAVEATS
+--------------------------------------------------------------------------------
+
+  - The pynqz2 target is a LOCAL RECONSTRUCTION. The original upstream files are
+    unrecoverable, so this is not byte-for-byte the upstream support.
+  - AXI GPIO at 0x41200000 is NOT implemented. test_locod.c never calls the
+    PIN_* API, so the accelerator path is unaffected, but gpio_init() would
+    fault on this bitstream.
+  - All changes are UNCOMMITTED:
+      * LoCod/locod.sh (1 line)
+      * submodules/locod-fpga/src/axil_axi_adapter/rtl/axil_axi_adapter.vhd
+      * submodules/locod-fpga/xilinx/generate_vivado_project.tcl
+      * submodules/locod-fpga/xilinx/pynqz2/ (new directory)
+    A fresh "git submodule update --init" will still try to fetch the missing
+    commit d868eda and fail.
+
+--------------------------------------------------------------------------------
+HARDWARE VALIDATION (PYNQ-Z2, 2026-11-06)
+--------------------------------------------------------------------------------
+
+The generated bitstream was loaded on a Pynq-Z2 (PYNQ 3.1.1 image) and the
+test application was executed on the ARM core.
+
+Result: PASS. FPGA results match the CPU reference:
+
+    FPGA Acc 0 result = 1 4 6 4 1
+    CPU  Acc 0 result = 1 4 6 4 1
+    FPGA MATRIX 2 == CPU MATRIX 2 (Pascal triangle, 5 rows)
+    (plus matrix1 = first column of ones, as expected from the test input)
+
+This also confirms that the $readmem path fix (section 4) is required: with
+the stale /workdir/src path the constant matrix is synthesized as zeros and
+the accelerator returns all-zero results.
+
+--------------------------------------------------------------------------------
+LOADING THE BITSTREAM ON PYNQ-Z2 (ZYNQ-7000)
+--------------------------------------------------------------------------------
+
+IMPORTANT: the mainline zynq-fpga driver requires the bitstream in
+BYTE-SWAPPED .bin form (sync word 66 55 99 AA). The .bin produced by
+"write_bitstream -bin_file" is big-endian (sync word AA 99 55 66) and is
+rejected by the kernel with:
+
+    fpga_manager fpga0: Invalid bitstream, could not find a sync word.
+    Bitstream must be a byte swapped .bin file
+
+Xilinx fpgautil performs this swap internally on Zynq. If fpgautil is not
+installed (e.g. stock PYNQ image), do the swap manually:
+
+    sudo python3 - <<'PY'
+    src = '/home/xilinx/mytest/fpga.bin'
+    dst = '/lib/firmware/fpga_swapped.bin'
+    data = open(src, 'rb').read()
+    out = bytearray(len(data))
+    for i in range(0, len(data), 4):
+        out[i:i+4] = data[i:i+4][::-1]
+    open(dst, 'wb').write(out)
+    PY
+
+    echo 0 | sudo tee /sys/class/fpga_manager/fpga0/flags
+    echo fpga_swapped.bin | sudo tee /sys/class/fpga_manager/fpga0/firmware
+    cat /sys/class/fpga_manager/fpga0/state      # expect: operating
+
+    sudo ./locod-cpu
+
+Note: the "FPGA execution time" reported by the test (~0.7 ms) includes the
+register accesses, DDR copies and 1 us polling loop, so it is much larger than
+the 7 us CPU time for this tiny 16x16 workload. This is expected and is not a
+sign of a problem.
+
+--------------------------------------------------------------------------------
+NETWORKING (developers only, not needed to run the test)
+--------------------------------------------------------------------------------
+
+The PYNQ-Z2 was reached over a direct Ethernet cable with:
+    laptop enp0s31f6: 192.168.137.1/24
+    board  eth0:      192.168.137.15/24, gateway 192.168.137.1
+Internet sharing from the laptop required:
+    sysctl net.ipv4.ip_forward=1
+    nft masquerade on the Wi-Fi interface
+    iptables FORWARD ACCEPT rules (Docker sets the FORWARD policy to DROP)
+None of this is needed to load the bitstream or run locod-cpu.
+================================================================================
