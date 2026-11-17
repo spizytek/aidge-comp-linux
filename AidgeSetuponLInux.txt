@@ -1,0 +1,207 @@
+Aidge Setup on LInux
+
+Install uv:
+curl -LsSf https://astral.sh/uv/install.sh | sh
+source $HOME/.local/bin/env     # makes `uv` available in this shell (or just open a new terminal)
+uv --version
+
+Env Setup:
+uv venv --python 3.12 venv
+source venv/bin/activate
+python --version     # should say 3.12.x
+
+Aidge Dependency installation:
+uv pip install aidge-core aidge-backend-cpu aidge-learning aidge-export-cpp aidge-onnx aidge-quantization
+
+sudo apt install cmake build-essential
+uv pip install pip....to use pip
+
+
+sudo apt install cmake build-essential
+Needs to be used to build the generated cpp code
+
+Testing:
+python -c "import aidge_core; import aidge_backend_cpu; print(aidge_core.Tensor.get_available_backends())"
+
+
+Vivado:
+Running the installLibs.sh after installation. COnvert the script to UNIX (windows based formatting sequences were used.)
+
+sudo apt install dos2unix
+dos2unix installLibs.sh
+Converts the script for linux use.
+
+Set a permanent alias, so that you can open it from the terminal anytime.
+echo "alias vivado-env='source ~/vivado/2026.1/Vivado/settings64.sh'" >> ~/.bashrc
+echo "alias vivado='source ~/vivado/2026.1/Vivado/settings64.sh && vivado'" >> ~/.bashrc
+source ~/.bashrc
+
+
+source ~/vivado/2026.1/Vivado/settings64.sh
+vivado
+
+Vivado 2026.1 on Ubuntu 26.04: libncurses.so.5 missing:
+Vivado 2026.1 was built against libncurses.so.5 and libtinfo.so.5. Current Ubuntu ships only version 6 (libncurses.so.6, libtinfo.so.6), and the libncurses5 package is no longer in the repos.
+
+Fix:
+Symlink the version 5 names to the installed version 6 libraries:
+command:
+sudo ln -s /lib/x86_64-linux-gnu/libncurses.so.6 /lib/x86_64-linux-gnu/libncurses.so.5
+sudo ln -s /lib/x86_64-linux-gnu/libtinfo.so.6 /lib/x86_64-linux-gnu/libtinfo.so.5
+
+NOTE:
+Vivado asks for libncurses.so.5. That file didn’t exist, so it failed. After the link was created, Vivado finds libncurses.so.5, Linux redirects it to the real libncurses.so.6, and the program loads normally.
+
+This works here because version 6 of ncurses stays compatible with what Vivado needs from version 5.
+
+LOCOD INSTALLATION:
+git clone https://github.com/viveris/LoCod.git
+cd LoCod
+git submodule update --init --recursive
+
+run:
+./install.sh --enable-pynqz2
+
+
+Vivado Installation Location:
+Vivado path: /home/techist/vivado/2026.1/Vivado/settings64.sh
+SDK path: /home/techist/AidgeComp/sdk-pynqz2.sh
+
+For the above script:
+YOu need to install docker as well:
+sudo apt update
+sudo apt install docker.io
+sudo systemctl enable --now docker
+sudo usermod -aG docker $USER
+
+Ran into issues installing the pynq toolchain because the git submodule update --init --recursive command aborted partway through.:
+FIx:
+cd ~/AidgeComp/LoCod
+git submodule deinit -f submodules/docker/LoCod-docker-sdk-pynqz2
+rm -rf .git/modules/submodules/docker/LoCod-docker-sdk-pynqz2
+git submodule update --init submodules/docker/LoCod-docker-sdk-pynqz2
+
+
+
+RUN LOCOD:
+
+source /home/techist/vivado/2026.1/Vivado/settings64.sh
+./locod.sh -t ultra96 -f demo/example_readme/main.c
+
+./locod.sh -t pynqz2 -f /home/techist/AidgeComp/test_locod.c
+
+ACCESSING THE BOARD VIA USB:
+sudo picocom -b 115200 /dev/ttyUSB1
+
+
+COPY BUILT FILES TO THE BOARD:
+mytest is a folder in the board that i created.
+scp /home/techist/AidgeComp/LoCod/locod-output/fpga.bit \
+    /home/techist/AidgeComp/LoCod/locod-output/fpga.bin \
+    /home/techist/AidgeComp/LoCod/locod-output/locod-cpu \
+    xilinx@192.168.137.15:~/mytest/
+    
+    
+Run on the board
+ssh-keygen -R 192.168.137.15 2>/dev/null
+ssh xilinx@192.168.137.15
+
+
+chmod +x locod-cpu
+sudo fpgautil -b fpga.bin      # loads the FPGA
+sudo ./locod-cpu               # needs root for /dev/mem
+
+    
+ISSUES:
+/home/techist/AidgeComp/FIX_REPORT_pynqz2.txt 
+
+It contains the same content as the report, in plain text with all exact file paths, line numbers, and code snippets for the five issues:
+
+Empty submodules/locod-fpga / missing pinned commit → reconstructed the Pynq-Z2 target
+Missing fpga.bin → write_bitstream -force -bin_file fpga.bit
+Hardcoded AxSIZE = "100" → axi_size(AXI_DATA_WIDTH)
+Constant arrays zeroed by /workdir/src/ path → extra sed rewrite in locod.sh:325
+BD clock association warnings → CONFIG.ASSOCIATED_BUSIF / CONFIG.ASSOCIATED_RESET
+Plus the benign warnings and the caveats (local reconstruction, no AXI GPIO, uncommitted changes).
+
+Compiling a  code (headerfile) in a within a src folder, yields an error because the locod.sh doesn't look for header files in src folders:
+- ... -I/workdir -D_FORTIFY_SOURCE=0 -DLOCOD_FPGA -O2"
++ ... -I/workdir -I/workdir/src -D_FORTIFY_SOURCE=0 -DLOCOD_FPGA -O2"
+
+
+
+
+
+Two independent problems, in order of appearance:
+sqrt has no functional unit, hard stop at module allocation. Needs the operation replaced with *, +, / (all mapped), e.g. Newton–Raphson, or moved to the CPU via CPU().
+
+In this shipped PandA 0.9.8 image, sqrt cannot be synthesized. Not "no sqrt unit exists" — a unit is declared (fp_sqrt_FU, fp_sqrtf_FU) — but the IR operation never binds to it, so module allocation fails.
+
+13.4 MiB of weights as internal memory will not fit 630 KB, regardless of #1. Needs streaming from DDR (demo/bram_to_ddr) or a much smaller layer.
+
+
+
+
+
+
+LOAD FPGA.bin INTO PL before running the cpu code with this script:
+
+cat > ~/mytest/load_fpga.sh <<'EOF'
+#!/bin/bash
+set -e
+
+if [ $# -lt 1 ]; then
+    echo "Usage: $0 <bitstream.bin>" >&2
+    exit 1
+fi
+
+SRC="$1"
+DST=/lib/firmware/fpga_swapped.bin
+
+if [ ! -f "$SRC" ]; then
+    echo "ERROR: bitstream not found: $SRC" >&2
+    exit 1
+fi
+
+python3 - "$SRC" "$DST" <<'PY'
+import sys
+src, dst = sys.argv[1], sys.argv[2]
+d = open(src, 'rb').read()
+o = bytearray(len(d))
+for i in range(0, len(d), 4):
+    o[i:i+4] = d[i:i+4][::-1]
+open(dst, 'wb').write(o)
+PY
+
+echo 0 > /sys/class/fpga_manager/fpga0/flags
+echo fpga_swapped.bin > /sys/class/fpga_manager/fpga0/firmware
+
+STATE=$(cat /sys/class/fpga_manager/fpga0/state)
+echo "FPGA manager state: ${STATE}"
+if [ "${STATE}" = "operating" ]; then
+    echo "Successively done uploading FPGA.bin to PL!!"
+else
+    echo "ERROR: FPGA load failed (state: ${STATE})" >&2
+    exit 1
+fi
+EOF
+chmod +x ~/mytest/load_fpga.sh
+
+
+---this is end of the script
+sudo ./load_fpga_bin_tool.sh /home/xilinx/<your_work_dir>/fpga.bin
+
+
+Logging in again: 
+run this on the board to see the list of ipv4 ips available.
+ip -4 -br a
+
+then most likely ping and see if the shown ip is through, then ssh into:
+ping -c3 192.168.2.99
+
+ssh xilinx@192.168.2.99
+
+
+./locod.sh -t pynqz2 -f /home/techist/AidgeComp/test_locod.c
+
+./locod.sh -t pynqz2 -f /home/techist/AidgeComp/locod_test_encoder_model/main.c  /home/techist/AidgeComp/locod_test_encoder_model/accel.c  /home/techist/AidgeComp/locod_test_encoder_model/io.h  /home/techist/AidgeComp/locod_test_encoder_model/params.h
