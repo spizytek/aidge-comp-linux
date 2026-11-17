@@ -1,0 +1,48 @@
+512 Mbyte DDR3 with 16-bit bus @ 1050 Mbps
+128 Mbit Quad-SPI Flash
+
+clock
+One 125 MHz for PL
+One 50 MHz for PS
+
+MAC — "multiply-accumulate". It's the basic math of a convolution:
+sum = sum + (pixel × weight)
+DSP — a "digital signal processing" slice. It's a small hard-wired circuit in the FPGA that does one MAC per clock, very efficiently.
+
+220 DSPs at 100 MHz ≈ 22,000 million MACs per second, if perfectly used
+
+MODEL OPERATORS:
+
+Opset: 13
+Operators used: ['Constant', 'Conv', 'Div', 'Identity', 'Max', 'Mul', 'Pow', 'Reshape', 'Sqrt', 'Sub']
+
+
+PROFILING ON HOST Machine.
+
+1. Regenerate + copy to a scratch dir
+cd ~/AidgeComp
+python test_acetone.py   # regenerates output_acetone/export
+
+rm -rf /tmp/profile_export
+cp -r output_acetone/export /tmp/profile_export
+cd /tmp/profile_export
+
+2. Build with optimization + debug symbols
+make clean
+make CCFLAGS="-O2 -g -Wall -Wextra -MMD" LDFLAGS="-lm"
+
+
+3. Run under Callgrind
+valgrind --tool=callgrind \
+         --dump-instr=yes \
+         --callgrind-out-file=/tmp/callgrind.out \
+         ./bin/run_export > /dev/null
+         
+valgrind --tool=callgrind \
+         --dump-instr=yes \
+         --collect-jumps=yes \
+         --callgrind-out-file=/tmp/callgrind_instr.out \
+         ./bin/run_export > /dev/null         
+
+4. GUI (best for exploring):
+QT_QPA_PLATFORMTHEME=qt6ct kcachegrind /tmp/callgrind.out

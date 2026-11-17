@@ -1,0 +1,65 @@
+%%{init: {'flowchart': { 'curve': 'monotoneY'}, 'fontFamily': 'Verdana' } }%%
+flowchart TB
+
+Producer_4("_2_FC_0_weights&nbsp;<sup><span title="AttachedProducer = false
+adapter:og_node = Node(name=&apos;_2_FC_0_weights&apos;, optype=&apos;Producer&apos;, children: [[1]])
+name = _2_FC_0_weights
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(Producer#4)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::producerCls
+Producer_5("_2_FC_0_biases&nbsp;<sup><span title="AttachedProducer = false
+adapter:og_node = Node(name=&apos;_2_FC_0_biases&apos;, optype=&apos;Producer&apos;, children: [[1]])
+name = _2_FC_0_biases
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(Producer#5)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::producerCls
+FC_0("_2_FC_0&nbsp;<sup><span title="adapter:og_node = Node(name=&apos;_2_FC_0&apos;, optype=&apos;FC&apos;, parents: [1, 1, 1], children: [[]])
+name = _2_FC_0
+output_names = [&quot;output&quot;]
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(FC#0)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>)
+Producer_2("_1_FCAct_1_weights&nbsp;<sup><span title="AttachedProducer = false
+adapter:og_node = Node(name=&apos;_1_FCAct_1_weights&apos;, optype=&apos;Producer&apos;, children: [[1]])
+name = _1_FCAct_1_weights
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(Producer#2)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::producerCls
+Producer_3("_1_FCAct_1_biases&nbsp;<sup><span title="AttachedProducer = false
+adapter:og_node = Node(name=&apos;_1_FCAct_1_biases&apos;, optype=&apos;Producer&apos;, children: [[1]])
+name = _1_FCAct_1_biases
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(Producer#3)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::producerCls
+Producer_1("_0_FCAct_0_biases&nbsp;<sup><span title="AttachedProducer = false
+adapter:og_node = Node(name=&apos;_0_FCAct_0_biases&apos;, optype=&apos;Producer&apos;, children: [[1]])
+name = _0_FCAct_0_biases
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(Producer#1)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::producerCls
+FCAct_0("_0_FCAct_0&nbsp;<sup><span title="AttachedProducer = false
+ignore_input_format = true
+name = _0_FCAct_0
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[4]</span></sup><br/><sub><em>(FCAct#0)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::metaCls
+Producer_0("_0_FCAct_0_weights&nbsp;<sup><span title="name = _0_FCAct_0_weights
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[2]</span></sup><br/><sub><em>(Producer#0)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::producerCls
+FCAct_1("_1_FCAct_1&nbsp;<sup><span title="name = _1_FCAct_1
+target = host
+" style="cursor: pointer; font-weight: bold; color: blue">[2]</span></sup><br/><sub><em>(FCAct#1)</em></sub>" backend: <span style='color:white; background-color: purple'>export_cpp</span>):::metaCls
+Producer_4-->|"0 [10, 50] float32 cpu<br/>&darr;<br/>1"|FC_0
+Producer_5-->|"0 [10] float32 cpu<br/>&darr;<br/>2"|FC_0
+Producer_2-->|"0 [50, 50] float32 cpu<br/>&darr;<br/>1"|FCAct_1
+Producer_3-->|"0 [50] float32 cpu<br/>&darr;<br/>2"|FCAct_1
+Producer_1-->|"0 [50] float32 cpu<br/>&darr;<br/>2"|FCAct_0
+FCAct_0-->|"0 [1, 50] float32 cpu<br/>&darr;<br/>0"|FCAct_1
+Producer_0-->|"0 [50, 784] float32 cpu<br/>&darr;<br/>1"|FCAct_0
+FCAct_1-->|"0 [1, 50] float32 cpu<br/>&darr;<br/>0"|FC_0
+input0((in#0)):::inputCls--->|" [1, 28, 28, 1] float32 NHWC<br/>&darr;<br/>0"|FCAct_0
+FC_0--->|"0 [1, 10] float32<br/>&darr;"|output0((out#0)):::outputCls
+classDef inputCls fill:#afa
+classDef outputCls fill:#ffa
+classDef externalCls fill:#ccc
+classDef producerCls fill:#ccf
+classDef genericCls fill:#f9f9ff,stroke-width:1px,stroke-dasharray: 5 5
+classDef metaCls stroke-width:5px
+classDef rootCls stroke:#f00
+classDef producerCls_rootCls stroke:#f00,fill:#ccf
+classDef genericCls_rootCls stroke:#f00,fill:#f9f9ff,stroke-width:1px,stroke-dasharray: 5 5
+classDef metaCls_rootCls stroke:#f00,stroke-width:5px
+

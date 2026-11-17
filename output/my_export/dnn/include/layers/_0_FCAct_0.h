@@ -1,0 +1,53 @@
+#ifndef _0_FCACT_0_LAYER_H
+#define _0_FCACT_0_LAYER_H
+
+#include "utils/cpp/rescaling_utils.hpp"
+#include "utils/cpp/typedefs.hpp"
+
+
+
+// INPUT CONF
+#define _0_FCACT_0_INPUT_0_IN_BATCH 1
+#define _0_FCACT_0_INPUT_0_NB_CHANNELS 1
+#define _0_FCACT_0_INPUT_0_IN_HEIGHT 28
+#define _0_FCACT_0_INPUT_0_IN_WIDTH 28
+
+// OUTPUT CONF
+#define _0_FCACT_0_OUTPUT_0_NB_OUTPUTS 50
+#define _0_FCACT_0_OUTPUT_0_OUT_HEIGHT 1
+#define _0_FCACT_0_OUTPUT_0_OUT_WIDTH 1
+#define _0_FCACT_0_OUTPUT_0_OUT_BATCH 1
+
+// MEMINFO CONF
+
+
+#define _0_FCACT_0_INPUT_0_MEM_SIZE 4
+#define _0_FCACT_0_INPUT_0_MEM_OFFSET 0
+#define _0_FCACT_0_INPUT_0_MEM_STRIDE 4
+#define _0_FCACT_0_INPUT_0_MEM_LENGTH 28
+#define _0_FCACT_0_INPUT_0_MEM_CONT_SIZE 3136
+#define _0_FCACT_0_INPUT_0_MEM_CONT_OFFSET 0
+#define _0_FCACT_0_INPUT_0_MEM_WRAP_OFFSET 0
+#define _0_FCACT_0_INPUT_0_MEM_WRAP_SIZE 0
+
+
+
+#define _0_FCACT_0_OUTPUT_0_MEM_SIZE 200
+#define _0_FCACT_0_OUTPUT_0_MEM_OFFSET 0
+#define _0_FCACT_0_OUTPUT_0_MEM_STRIDE 200
+#define _0_FCACT_0_OUTPUT_0_MEM_LENGTH 1
+#define _0_FCACT_0_OUTPUT_0_MEM_CONT_OFFSET 0
+#define _0_FCACT_0_OUTPUT_0_MEM_CONT_SIZE 0
+#define _0_FCACT_0_OUTPUT_0_MEM_WRAP_OFFSET 0
+#define _0_FCACT_0_OUTPUT_0_MEM_WRAP_SIZE 0
+
+
+#define _0_FCACT_0_ACTIVATION export_cpp::ActivationFunction_T::Rectifier
+
+static const export_cpp::NoScaling _0_FCACT_0_RESCALING = {};
+#define _0_FCACT_0_WEIGHTS_SIZE 39200
+#define _0_FCACT_0_BIASES_SIZE 50
+
+#define _0_FCACT_0_OUTPUT_0_DEV_FMT export_cpp::DataFormat_T::DEFAULT
+
+#endif /* _0_FCACT_0_LAYER_H */

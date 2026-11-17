@@ -1,0 +1,16 @@
+gantt
+dateFormat x
+axisFormat %Q µs
+
+fc3_weight (Producer#4) :0, 0
+fc3_bias (Producer#5) :1, 1
+fc2_weight (Producer#2) :1, 2
+fc2_bias (Producer#3) :2, 2
+fc1_bias (Producer#1) :2, 2
+fc1_weight (Producer#0) :3, 3
+fc1_Gemm (FC#0) :3, 341
+Relu (ReLU#0) :342, 360
+fc2_Gemm (FC#1) :360, 368
+Relu_1 (ReLU#1) :369, 381
+fc3_Gemm (FC#2) :381, 387
+

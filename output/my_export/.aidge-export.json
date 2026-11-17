@@ -1,0 +1,54 @@
+{
+  "aidge_cmp": false,
+  "application": "standalone",
+  "application_config": {
+    "apss_linux": false,
+    "heterogeneous_deploy": false,
+    "kind": "standalone",
+    "nb_iterations": 100,
+    "nb_validation_iterations": 0,
+    "nb_warmup": 10,
+    "profiling": false,
+    "tinyml_benchmark_model": "ic01",
+    "tinymlbenchmark": false,
+    "validation": false,
+    "validation_inference_type": "classification"
+  },
+  "arch": null,
+  "build_system": "cmake",
+  "environment": "linux",
+  "execution_domain": "linux",
+  "expected_artifact": "build/run_export",
+  "export_libraries": [
+    "export_cpp"
+  ],
+  "inputs": [
+    {
+      "dims": [
+        1,
+        28,
+        28,
+        1
+      ],
+      "dtype": "float",
+      "name": "_0_FCAct_0_input_0",
+      "size": 784
+    }
+  ],
+  "memory_peak_bytes": null,
+  "outputs": [
+    {
+      "dims": [
+        1,
+        10
+      ],
+      "dtype": "float",
+      "name": "_2_FC_0_output_0",
+      "size": 10
+    }
+  ],
+  "profiling": false,
+  "protocol": "aidge-stdout/v1",
+  "schema_version": 1,
+  "target": "host"
+}

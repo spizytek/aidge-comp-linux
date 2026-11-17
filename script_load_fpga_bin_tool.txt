@@ -1,0 +1,35 @@
+cat > ~/load_fpga_bin_tool.sh <<'EOF'
+#!/bin/bash
+set -e
+
+SRC="${1:-/home/xilinx/mytest/fpga.bin}"
+DST=/lib/firmware/fpga_swapped.bin
+
+if [ ! -f "$SRC" ]; then
+    echo "ERROR: bitstream not found: $SRC" >&2
+    exit 1
+fi
+
+python3 - "$SRC" "$DST" <<'PY'
+import sys
+src, dst = sys.argv[1], sys.argv[2]
+d = open(src, 'rb').read()
+o = bytearray(len(d))
+for i in range(0, len(d), 4):
+    o[i:i+4] = d[i:i+4][::-1]
+open(dst, 'wb').write(o)
+PY
+
+echo 0 > /sys/class/fpga_manager/fpga0/flags
+echo fpga_swapped.bin > /sys/class/fpga_manager/fpga0/firmware
+
+STATE=$(cat /sys/class/fpga_manager/fpga0/state)
+echo "FPGA manager state: ${STATE}"
+if [ "${STATE}" = "operating" ]; then
+    echo "Successively done uploading FPGA.bin to PL!!"
+else
+    echo "ERROR: FPGA load failed (state: ${STATE})" >&2
+    exit 1
+fi
+EOF
+chmod +x ~/load_fpga_bin_tool.sh
