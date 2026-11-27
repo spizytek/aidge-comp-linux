@@ -234,9 +234,12 @@ A future option is a custom fast-rsqrt kernel (bit-hack + 2 Newton steps) for bo
 - Modal CLI **1.6.0**, profile `eurosat`, GPU **Tesla T4**.
 - Image: Debian slim + `torch 2.15.0+cu132`, `compressai 1.2.8`, `numpy 1.26.4`, `pytorch-msssim`.
 - Dataset volume: `aidge-data`, file `/dataset_64_uint8.npz` (9,632 train + 1,248 test, uint8, 127.5 MB).
+- Regenerate the `.npz` from `DataSet/` with `python tools/pack_dataset.py`
+  (it is 127.5 MB, so it is git-ignored and shipped out-of-band).
 - Smoke test: 1 epoch / 128 images, **4.2 s**, loss high as expected for a random-init surgery.
 
 ```powershell
+python tools\pack_dataset.py
 modal volume create aidge-data
 modal volume put aidge-data analysis\dataset_64_uint8.npz /dataset_64_uint8.npz
 modal run training\modal_train.py::smoke

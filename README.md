@@ -90,6 +90,7 @@ Key tools:
 | `tools/eval_rd_64.py` | bpp / PSNR / SSIM / speed on `DataSet/` |
 | `tools/simulate_int8.py` | int8 QDQ simulation (weights + activations) |
 | `tools/eval_approx_gdn.py` | hardware-friendly GDN vs exact |
+| `tools/pack_dataset.py` | `DataSet/*.png` → `analysis/dataset_64_uint8.npz` (PTQ / Modal) |
 | `tools/build_gdn_unit_onnx.py` | CompressAI encoder → 4-conv + 3-GDN ONNX |
 | `training/` | model surgery + Modal T4 fine-tuning harness |
 

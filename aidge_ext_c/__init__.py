@@ -23,11 +23,20 @@ from .gdn import (
 )
 
 
+def register_gdn_export() -> None:
+    """Register the AIDGE C exporter for GDN.
+
+    Imported lazily so that runtime-only users do not need ``aidge_export_c``.
+    """
+    from .gdn_export_c import register_gdn_export as _register_gdn_export
+
+    _register_gdn_export()
+
+
 def register_gdn(export_c: bool = False) -> None:
     """Register the CPU implementation, and optionally the C exporter."""
     register_gdn_cpu()
     if export_c:
-        from .gdn_export_c import register_gdn_export
         register_gdn_export()
 
 
@@ -37,4 +46,5 @@ __all__ = [
     "make_gdn_node",
     "register_gdn",
     "register_gdn_cpu",
+    "register_gdn_export",
 ]
