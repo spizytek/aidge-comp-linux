@@ -1,0 +1,787 @@
+{
+  "model": "C:\\Users\\HP\\Desktop\\AIDGE\\aidge-comp-linux\\Model\\bmshj2018_factorized_encoder.onnx",
+  "input": [
+    1,
+    3,
+    64,
+    64
+  ],
+  "total_params": 3505679,
+  "total_macs": 383778816,
+  "by_op": {
+    "Identity": {
+      "count": 9,
+      "macs": 0,
+      "params": 9
+    },
+    "Conv": {
+      "count": 7,
+      "macs": 383778816,
+      "params": 3394496
+    },
+    "Max": {
+      "count": 6,
+      "macs": 0,
+      "params": 111170
+    },
+    "Constant": {
+      "count": 12,
+      "macs": 0,
+      "params": 0
+    },
+    "Pow": {
+      "count": 9,
+      "macs": 0,
+      "params": 0
+    },
+    "Sub": {
+      "count": 6,
+      "macs": 0,
+      "params": 1
+    },
+    "Reshape": {
+      "count": 3,
+      "macs": 0,
+      "params": 12
+    },
+    "Sqrt": {
+      "count": 3,
+      "macs": 0,
+      "params": 0
+    },
+    "Div": {
+      "count": 3,
+      "macs": 0,
+      "params": 0
+    },
+    "Mul": {
+      "count": 3,
+      "macs": 0,
+      "params": 0
+    }
+  },
+  "nodes": [
+    {
+      "idx": 0,
+      "op": "Identity",
+      "name": "Identity_48",
+      "output": "g_a.5.gamma_reparam.lower_bound.bound",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 1,
+      "op": "Identity",
+      "name": "Identity_49",
+      "output": "g_a.5.gamma_reparam.pedestal",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 2,
+      "op": "Identity",
+      "name": "Identity_50",
+      "output": "g_a.5.beta_reparam.lower_bound.bound",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 3,
+      "op": "Identity",
+      "name": "Identity_51",
+      "output": "g_a.5.beta_reparam.pedestal",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 4,
+      "op": "Identity",
+      "name": "Identity_52",
+      "output": "g_a.3.gamma_reparam.lower_bound.bound",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 5,
+      "op": "Identity",
+      "name": "Identity_53",
+      "output": "g_a.3.gamma_reparam.pedestal",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 6,
+      "op": "Identity",
+      "name": "Identity_54",
+      "output": "g_a.3.beta_reparam.lower_bound.bound",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 7,
+      "op": "Identity",
+      "name": "Identity_55",
+      "output": "g_a.3.beta_reparam.pedestal",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 8,
+      "op": "Identity",
+      "name": "Identity_56",
+      "output": "g_a.1.gamma_reparam.pedestal",
+      "out_shape": [
+        1
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 9,
+      "op": "Conv",
+      "name": "/g_a/g_a.0/Conv",
+      "output": "/g_a/g_a.0/Conv_output_0",
+      "out_shape": [
+        1,
+        192,
+        32,
+        32
+      ],
+      "params": 14592,
+      "macs": 14745600
+    },
+    {
+      "idx": 10,
+      "op": "Max",
+      "name": "/g_a/g_a.1/beta_reparam/lower_bound/Max",
+      "output": "/g_a/g_a.1/beta_reparam/lower_bound/Max_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 193,
+      "macs": 0
+    },
+    {
+      "idx": 11,
+      "op": "Constant",
+      "name": "/g_a/g_a.1/beta_reparam/Constant",
+      "output": "/g_a/g_a.1/beta_reparam/Constant_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 12,
+      "op": "Pow",
+      "name": "/g_a/g_a.1/beta_reparam/Pow",
+      "output": "/g_a/g_a.1/beta_reparam/Pow_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 13,
+      "op": "Sub",
+      "name": "/g_a/g_a.1/beta_reparam/Sub",
+      "output": "/g_a/g_a.1/beta_reparam/Sub_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 1,
+      "macs": 0
+    },
+    {
+      "idx": 14,
+      "op": "Max",
+      "name": "/g_a/g_a.1/gamma_reparam/lower_bound/Max",
+      "output": "/g_a/g_a.1/gamma_reparam/lower_bound/Max_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 36865,
+      "macs": 0
+    },
+    {
+      "idx": 15,
+      "op": "Constant",
+      "name": "/g_a/g_a.1/gamma_reparam/Constant",
+      "output": "/g_a/g_a.1/gamma_reparam/Constant_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 16,
+      "op": "Pow",
+      "name": "/g_a/g_a.1/gamma_reparam/Pow",
+      "output": "/g_a/g_a.1/gamma_reparam/Pow_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 17,
+      "op": "Sub",
+      "name": "/g_a/g_a.1/gamma_reparam/Sub",
+      "output": "/g_a/g_a.1/gamma_reparam/Sub_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 18,
+      "op": "Reshape",
+      "name": "/g_a/g_a.1/Reshape",
+      "output": "/g_a/g_a.1/Reshape_output_0",
+      "out_shape": [
+        192,
+        192,
+        1,
+        1
+      ],
+      "params": 4,
+      "macs": 0
+    },
+    {
+      "idx": 19,
+      "op": "Constant",
+      "name": "/g_a/g_a.1/Constant_3",
+      "output": "/g_a/g_a.1/Constant_3_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 20,
+      "op": "Pow",
+      "name": "/g_a/g_a.1/Pow",
+      "output": "/g_a/g_a.1/Pow_output_0",
+      "out_shape": [
+        1,
+        192,
+        32,
+        32
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 21,
+      "op": "Conv",
+      "name": "/g_a/g_a.1/Conv",
+      "output": "/g_a/g_a.1/Conv_output_0",
+      "out_shape": [
+        1,
+        192,
+        32,
+        32
+      ],
+      "params": 0,
+      "macs": 37748736
+    },
+    {
+      "idx": 22,
+      "op": "Sqrt",
+      "name": "/g_a/g_a.1/Sqrt",
+      "output": "/g_a/g_a.1/Sqrt_output_0",
+      "out_shape": [
+        1,
+        192,
+        32,
+        32
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 23,
+      "op": "Constant",
+      "name": "/g_a/g_a.1/Constant_4",
+      "output": "/g_a/g_a.1/Constant_4_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 24,
+      "op": "Div",
+      "name": "/g_a/g_a.1/Div",
+      "output": "/g_a/g_a.1/Div_output_0",
+      "out_shape": [
+        1,
+        192,
+        32,
+        32
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 25,
+      "op": "Mul",
+      "name": "/g_a/g_a.1/Mul",
+      "output": "/g_a/g_a.1/Mul_output_0",
+      "out_shape": [
+        1,
+        192,
+        32,
+        32
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 26,
+      "op": "Conv",
+      "name": "/g_a/g_a.2/Conv",
+      "output": "/g_a/g_a.2/Conv_output_0",
+      "out_shape": [
+        1,
+        192,
+        16,
+        16
+      ],
+      "params": 921792,
+      "macs": 235929600
+    },
+    {
+      "idx": 27,
+      "op": "Max",
+      "name": "/g_a/g_a.3/beta_reparam/lower_bound/Max",
+      "output": "/g_a/g_a.3/beta_reparam/lower_bound/Max_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 192,
+      "macs": 0
+    },
+    {
+      "idx": 28,
+      "op": "Constant",
+      "name": "/g_a/g_a.3/beta_reparam/Constant",
+      "output": "/g_a/g_a.3/beta_reparam/Constant_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 29,
+      "op": "Pow",
+      "name": "/g_a/g_a.3/beta_reparam/Pow",
+      "output": "/g_a/g_a.3/beta_reparam/Pow_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 30,
+      "op": "Sub",
+      "name": "/g_a/g_a.3/beta_reparam/Sub",
+      "output": "/g_a/g_a.3/beta_reparam/Sub_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 31,
+      "op": "Max",
+      "name": "/g_a/g_a.3/gamma_reparam/lower_bound/Max",
+      "output": "/g_a/g_a.3/gamma_reparam/lower_bound/Max_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 36864,
+      "macs": 0
+    },
+    {
+      "idx": 32,
+      "op": "Constant",
+      "name": "/g_a/g_a.3/gamma_reparam/Constant",
+      "output": "/g_a/g_a.3/gamma_reparam/Constant_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 33,
+      "op": "Pow",
+      "name": "/g_a/g_a.3/gamma_reparam/Pow",
+      "output": "/g_a/g_a.3/gamma_reparam/Pow_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 34,
+      "op": "Sub",
+      "name": "/g_a/g_a.3/gamma_reparam/Sub",
+      "output": "/g_a/g_a.3/gamma_reparam/Sub_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 35,
+      "op": "Reshape",
+      "name": "/g_a/g_a.3/Reshape",
+      "output": "/g_a/g_a.3/Reshape_output_0",
+      "out_shape": [
+        192,
+        192,
+        1,
+        1
+      ],
+      "params": 4,
+      "macs": 0
+    },
+    {
+      "idx": 36,
+      "op": "Constant",
+      "name": "/g_a/g_a.3/Constant_3",
+      "output": "/g_a/g_a.3/Constant_3_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 37,
+      "op": "Pow",
+      "name": "/g_a/g_a.3/Pow",
+      "output": "/g_a/g_a.3/Pow_output_0",
+      "out_shape": [
+        1,
+        192,
+        16,
+        16
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 38,
+      "op": "Conv",
+      "name": "/g_a/g_a.3/Conv",
+      "output": "/g_a/g_a.3/Conv_output_0",
+      "out_shape": [
+        1,
+        192,
+        16,
+        16
+      ],
+      "params": 0,
+      "macs": 9437184
+    },
+    {
+      "idx": 39,
+      "op": "Sqrt",
+      "name": "/g_a/g_a.3/Sqrt",
+      "output": "/g_a/g_a.3/Sqrt_output_0",
+      "out_shape": [
+        1,
+        192,
+        16,
+        16
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 40,
+      "op": "Constant",
+      "name": "/g_a/g_a.3/Constant_4",
+      "output": "/g_a/g_a.3/Constant_4_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 41,
+      "op": "Div",
+      "name": "/g_a/g_a.3/Div",
+      "output": "/g_a/g_a.3/Div_output_0",
+      "out_shape": [
+        1,
+        192,
+        16,
+        16
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 42,
+      "op": "Mul",
+      "name": "/g_a/g_a.3/Mul",
+      "output": "/g_a/g_a.3/Mul_output_0",
+      "out_shape": [
+        1,
+        192,
+        16,
+        16
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 43,
+      "op": "Conv",
+      "name": "/g_a/g_a.4/Conv",
+      "output": "/g_a/g_a.4/Conv_output_0",
+      "out_shape": [
+        1,
+        192,
+        8,
+        8
+      ],
+      "params": 921792,
+      "macs": 58982400
+    },
+    {
+      "idx": 44,
+      "op": "Max",
+      "name": "/g_a/g_a.5/beta_reparam/lower_bound/Max",
+      "output": "/g_a/g_a.5/beta_reparam/lower_bound/Max_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 192,
+      "macs": 0
+    },
+    {
+      "idx": 45,
+      "op": "Constant",
+      "name": "/g_a/g_a.5/beta_reparam/Constant",
+      "output": "/g_a/g_a.5/beta_reparam/Constant_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 46,
+      "op": "Pow",
+      "name": "/g_a/g_a.5/beta_reparam/Pow",
+      "output": "/g_a/g_a.5/beta_reparam/Pow_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 47,
+      "op": "Sub",
+      "name": "/g_a/g_a.5/beta_reparam/Sub",
+      "output": "/g_a/g_a.5/beta_reparam/Sub_output_0",
+      "out_shape": [
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 48,
+      "op": "Max",
+      "name": "/g_a/g_a.5/gamma_reparam/lower_bound/Max",
+      "output": "/g_a/g_a.5/gamma_reparam/lower_bound/Max_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 36864,
+      "macs": 0
+    },
+    {
+      "idx": 49,
+      "op": "Constant",
+      "name": "/g_a/g_a.5/gamma_reparam/Constant",
+      "output": "/g_a/g_a.5/gamma_reparam/Constant_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 50,
+      "op": "Pow",
+      "name": "/g_a/g_a.5/gamma_reparam/Pow",
+      "output": "/g_a/g_a.5/gamma_reparam/Pow_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 51,
+      "op": "Sub",
+      "name": "/g_a/g_a.5/gamma_reparam/Sub",
+      "output": "/g_a/g_a.5/gamma_reparam/Sub_output_0",
+      "out_shape": [
+        192,
+        192
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 52,
+      "op": "Reshape",
+      "name": "/g_a/g_a.5/Reshape",
+      "output": "/g_a/g_a.5/Reshape_output_0",
+      "out_shape": [
+        192,
+        192,
+        1,
+        1
+      ],
+      "params": 4,
+      "macs": 0
+    },
+    {
+      "idx": 53,
+      "op": "Constant",
+      "name": "/g_a/g_a.5/Constant_3",
+      "output": "/g_a/g_a.5/Constant_3_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 54,
+      "op": "Pow",
+      "name": "/g_a/g_a.5/Pow",
+      "output": "/g_a/g_a.5/Pow_output_0",
+      "out_shape": [
+        1,
+        192,
+        8,
+        8
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 55,
+      "op": "Conv",
+      "name": "/g_a/g_a.5/Conv",
+      "output": "/g_a/g_a.5/Conv_output_0",
+      "out_shape": [
+        1,
+        192,
+        8,
+        8
+      ],
+      "params": 0,
+      "macs": 2359296
+    },
+    {
+      "idx": 56,
+      "op": "Sqrt",
+      "name": "/g_a/g_a.5/Sqrt",
+      "output": "/g_a/g_a.5/Sqrt_output_0",
+      "out_shape": [
+        1,
+        192,
+        8,
+        8
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 57,
+      "op": "Constant",
+      "name": "/g_a/g_a.5/Constant_4",
+      "output": "/g_a/g_a.5/Constant_4_output_0",
+      "out_shape": [],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 58,
+      "op": "Div",
+      "name": "/g_a/g_a.5/Div",
+      "output": "/g_a/g_a.5/Div_output_0",
+      "out_shape": [
+        1,
+        192,
+        8,
+        8
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 59,
+      "op": "Mul",
+      "name": "/g_a/g_a.5/Mul",
+      "output": "/g_a/g_a.5/Mul_output_0",
+      "out_shape": [
+        1,
+        192,
+        8,
+        8
+      ],
+      "params": 0,
+      "macs": 0
+    },
+    {
+      "idx": 60,
+      "op": "Conv",
+      "name": "/g_a/g_a.6/Conv",
+      "output": "x_out",
+      "out_shape": [
+        1,
+        320,
+        4,
+        4
+      ],
+      "params": 1536320,
+      "macs": 24576000
+    }
+  ]
+}

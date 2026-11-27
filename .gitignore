@@ -18,3 +18,9 @@ output_*/
 # vendor SDK installer (242 MB) — distribute via GitHub Releases, not git
 sdk-pynqz2.sh
 locod_test_encoder_model/params.h
+
+# ---- model optimization scratch (large / regenerable) ----
+analysis/*.npy
+analysis/*.npz
+analysis/*.onnx
+analysis/smoke/
