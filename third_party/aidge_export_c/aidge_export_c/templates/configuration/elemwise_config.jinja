@@ -1,0 +1,39 @@
+{#- Elementwise layer configuration (C) -#}
+#ifndef {{ name|upper }}_LAYER_H
+#define {{ name|upper }}_LAYER_H
+
+#include <stddef.h>
+
+#include "utils/c/typedefs.h"
+
+#define {{ name|upper }}_NB_MAT {{ offset_in1|length }}
+#define {{ name|upper }}_INPUT1_CONT_SIZE {{ input1_cont_size }}
+#define {{ name|upper }}_INPUT2_CONT_SIZE {{ input2_cont_size }}
+#define {{ name|upper }}_OUTPUT_CONT_SIZE {{ output_cont_size }}
+
+static const size_t {{ name|upper }}_OFFSET_IN1[] = { {{ offset_in1|join(', ') }} };
+static const size_t {{ name|upper }}_OFFSET_IN2[] = { {{ offset_in2|join(', ') }} };
+
+#define {{ name|upper }}_OUTPUT_0_MEM_OFFSET {{ mem_info_offset[0] | default(0, true) }}
+#define {{ name|upper }}_OUTPUT_0_MEM_SIZE {{ mem_info_size[0] | default(0, true) }}
+#define {{ name|upper }}_OUTPUT_0_MEM_STRIDE {{ mem_info_stride[0] | default(0, true) }}
+#define {{ name|upper }}_IS_INT8 {% if is_int8 %}1{% else %}0{% endif %}
+#define {{ name|upper }}_SHIFT {{ shift_value | default(0, true) }}
+#define {{ name|upper }}_SCALING_COEF {{ scaling_coef | default(1, true) }}
+
+{% if elemwise_op == "Sub" %}
+#define {{ name|upper }}_ELEM_OP EXPORT_C_ELEM_SUB
+{% elif elemwise_op == "Mul" %}
+#define {{ name|upper }}_ELEM_OP EXPORT_C_ELEM_MUL
+{% elif elemwise_op == "Div" %}
+#define {{ name|upper }}_ELEM_OP EXPORT_C_ELEM_DIV
+{% else %}
+#define {{ name|upper }}_ELEM_OP EXPORT_C_ELEM_ADD
+{% endif %}
+{% if activation == "Rectifier" %}
+#define {{ name|upper }}_ACTIVATION EXPORT_C_ACT_RELU
+{% else %}
+#define {{ name|upper }}_ACTIVATION EXPORT_C_ACT_LINEAR
+{% endif %}
+
+#endif /* {{ name|upper }}_LAYER_H */

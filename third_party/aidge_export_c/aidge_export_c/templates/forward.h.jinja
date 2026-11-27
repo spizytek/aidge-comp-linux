@@ -1,0 +1,23 @@
+#ifndef {{ include_guard_name }}
+#define {{ include_guard_name }}
+
+#include <stdint.h>
+#include <stddef.h>
+
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+void {{ func_name }}(
+{%- for i in range(inputs_name | length) %}
+    const {{ inputs_dtype[i] }}* {{ inputs_name[i] }},
+{%- endfor %}
+{%- for o in range(outputs_name | length) %}
+    {{ outputs_dtype[o] }}** {{ outputs_name[o] }}_ptr{% if not loop.last %},{% endif %}
+{%- endfor %});
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* {{ include_guard_name }} */

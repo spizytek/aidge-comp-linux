@@ -1,0 +1,31 @@
+{% if is_int8 %}
+{{ out_cdtype[0] }}* {{ out_name[0] }} = ({{ out_cdtype[0] }}*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_elemwise_forward_int8(
+    {{ out_name[0] }},
+    {{ in_name[0] }},
+    {{ in_name[1] }},
+    {{ name|upper }}_NB_MAT,
+    {{ name|upper }}_ELEM_OP,
+    {{ name|upper }}_INPUT1_CONT_SIZE,
+    {{ name|upper }}_INPUT2_CONT_SIZE,
+    {{ name|upper }}_OUTPUT_CONT_SIZE,
+    {{ name|upper }}_OFFSET_IN1,
+    {{ name|upper }}_OFFSET_IN2,
+    {{ name|upper }}_ACTIVATION,
+    {{ name|upper }}_SCALING_COEF,
+    {{ name|upper }}_SHIFT);
+{% else %}
+{{ out_cdtype[0] }}* {{ out_name[0] }} = ({{ out_cdtype[0] }}*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_elemwise_forward(
+    {{ out_name[0] }},
+    {{ in_name[0] }},
+    {{ in_name[1] }},
+    {{ name|upper }}_NB_MAT,
+    {{ name|upper }}_ELEM_OP,
+    {{ name|upper }}_INPUT1_CONT_SIZE,
+    {{ name|upper }}_INPUT2_CONT_SIZE,
+    {{ name|upper }}_OUTPUT_CONT_SIZE,
+    {{ name|upper }}_OFFSET_IN1,
+    {{ name|upper }}_OFFSET_IN2,
+    {{ name|upper }}_ACTIVATION);
+{% endif %}

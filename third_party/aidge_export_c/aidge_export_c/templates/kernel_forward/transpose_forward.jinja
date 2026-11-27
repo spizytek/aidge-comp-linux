@@ -1,0 +1,10 @@
+{{ out_cdtype[0] }}* {{ out_name[0] }} = ({{ out_cdtype[0] }}*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_transpose_nd(
+    {{ in_name[0] }},
+    {{ out_name[0] }},
+    {{ name|upper }}_NB_DIMS,
+    {{ name|upper }}_NB_ELTS,
+    {{ name|upper }}_PERMUTE,
+    {{ name|upper }}_DIMS,
+    {{ name|upper }}_OUT_STRIDES,
+    sizeof({{ in_cdtype[0] }}));

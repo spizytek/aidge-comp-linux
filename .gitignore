@@ -26,3 +26,11 @@ analysis/*.onnx
 analysis/smoke/
 analysis/*_c/
 analysis/ort_*/
+analysis/aidge_ptq/
+
+# local diagnostic attempts (kept out of the shipped flow)
+tools/aidge_export_c_int8.py
+tools/aidge_ptq_export.py
+tools/dedupe_onnx_constants.py
+tools/export_approx_encoder_onnx.py
+tools/ort_quantize_encoder.py

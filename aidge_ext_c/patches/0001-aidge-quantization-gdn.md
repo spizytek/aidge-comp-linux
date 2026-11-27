@@ -39,6 +39,13 @@ Build (Windows, VS 2022 + CMake):
   # from a Developer PowerShell for VS 2022
   .\setup.ps1 -Modules core,backend_cpu,onnx,quantization -BuildType Release
 
+Build (Ubuntu — recommended; this is the deployment platform):
+
+  git clone --recursive https://gitlab.eclipse.org/eclipse/aidge/aidge.git
+  cd aidge
+  # edit aidge_quantization/include/aidge/quantization/PTQ/PTQTypes.hpp
+  ./setup.sh -m core -m backend_cpu -m onnx -m quantization --release --python
+
 Then run PTQ with the proper GDN graph:
 
   from gdn_operator import GDNImpl     # registers ["cpu","GDN"]

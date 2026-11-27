@@ -1,0 +1,31 @@
+#include <stdint.h>
+#include <stddef.h>
+
+#include "{{ include_forward_header }}"
+
+{% for header in headers -%}
+{%- if header.startswith('"') or header.startswith('<') %}
+#include {{ header | replace('include/', '') }}
+{%- else %}
+#include "{{ header | replace('include/', '') }}"
+{%- endif %}
+{%- endfor %}
+
+static unsigned char mem_0[{% if mem_peaks[0] > 0 %}{{ mem_peaks[0] }}{% else %}1{% endif %}];
+
+void {{ func_name }}(
+{%- for i in range(inputs_name | length) %}
+    const {{ inputs_dtype[i] }}* {{ inputs_name[i] }},
+{%- endfor %}
+{%- for o in range(outputs_name | length) %}
+    {{ outputs_dtype[o] }}** {{ outputs_name[o] }}_ptr{% if not loop.last %},{% endif %}
+{%- endfor %})
+{
+{%- for action in actions %}
+    {{ action }}
+{%- endfor %}
+
+{%- for output_name in outputs_name %}
+    *{{ output_name }}_ptr = {{ output_name }};
+{%- endfor %}
+}

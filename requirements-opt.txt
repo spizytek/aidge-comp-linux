@@ -1,0 +1,13 @@
+# Model optimization / ONNX builder dependencies
+# (tools/build_gdn_unit_onnx.py, tools/simulate_int8.py, training/)
+torch
+torchvision
+compressai==1.2.8
+onnx
+onnxruntime
+Pillow
+pytorch-msssim
+numpy
+
+# Optional: Modal GPU training (training/modal_train.py)
+# modal

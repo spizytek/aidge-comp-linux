@@ -85,7 +85,11 @@ that replaces each decomposed GDN subgraph with `make_gdn_node(gamma, beta)`.
 
 ## 4. C export
 
-Install `aidge_export_c` first (the C backend used by the LoCod flow), then:
+Install the vendored C backend first (used by the LoCod flow), then:
+
+```bash
+pip install -e third_party/aidge_export_c
+```
 
 ```python
 from aidge_ext_c import register_gdn_export
@@ -150,9 +154,9 @@ onnx
 Optional:
 
 ```text
-aidge_export_c        # C export
-aidge-quantization    # int8, after the GDN patch
-torch, compressai     # only for tools/build_gdn_unit_onnx.py
+third_party/aidge_export_c   # C export (pip install -e ...)
+aidge-quantization           # int8, after the GDN patch
+torch, compressai            # only for tools/build_gdn_unit_onnx.py
 ```
 
 `requirements-gdn.txt` lists these.

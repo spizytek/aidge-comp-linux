@@ -4,8 +4,8 @@ aidge-backend-cpu>=0.10
 aidge-onnx>=0.10
 onnx
 
-# Optional: C export
-# aidge_export_c>=0.6
+# Optional: C export (vendored in third_party/aidge_export_c)
+# pip install -e third_party/aidge_export_c
 
 # Optional: int8 PTQ (requires the GDN quantization patch + AIDGE rebuild)
 # aidge-quantization>=0.10

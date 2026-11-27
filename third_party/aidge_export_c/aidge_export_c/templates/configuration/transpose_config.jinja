@@ -1,0 +1,15 @@
+#ifndef {{ name|upper }}_LAYER_H
+#define {{ name|upper }}_LAYER_H
+
+#include <stddef.h>
+
+#define {{ name|upper }}_NB_ELTS {{ in_dims[0] | join('*') }}
+#define {{ name|upper }}_NB_DIMS {{ in_dims[0] | length }}
+
+static const size_t {{ name|upper }}_PERMUTE[] = { {{ output_dims_order | join(', ') }} };
+static const size_t {{ name|upper }}_DIMS[] = { {{ in_dims[0] | join(', ') }} };
+static const size_t {{ name|upper }}_OUT_STRIDES[] = { {{ out_strides | join(', ') }} };
+
+#define {{ name|upper }}_OUTPUT_0_MEM_OFFSET {{ mem_info_offset[0] | default(0, true) }}
+
+#endif /* {{ name|upper }}_LAYER_H */

@@ -1,0 +1,41 @@
+{% if is_int8 %}
+{{ out_cdtype[0] }}* {{ out_name[0] }} = ({{ out_cdtype[0] }}*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_pool2d_forward_int8(
+    {{ in_name[0] }},
+    {{ out_name[0] }},
+    {{ name|upper }}_IN_BATCH,
+    {{ name|upper }}_IN_HEIGHT,
+    {{ name|upper }}_IN_WIDTH,
+    {{ name|upper }}_IN_CHANNELS,
+    {{ name|upper }}_OUT_HEIGHT,
+    {{ name|upper }}_OUT_WIDTH,
+    {{ name|upper }}_OUT_CHANNELS,
+    {{ name|upper }}_KERNEL_HEIGHT,
+    {{ name|upper }}_KERNEL_WIDTH,
+    {{ name|upper }}_STRIDE_Y,
+    {{ name|upper }}_STRIDE_X,
+    {{ name|upper }}_PADDING_Y,
+    {{ name|upper }}_PADDING_X,
+    {{ name|upper }}_POOLING_TYPE,
+    {{ name|upper }}_ACTIVATION);
+{% else %}
+{{ out_cdtype[0] }}* {{ out_name[0] }} = ({{ out_cdtype[0] }}*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_pool2d_forward(
+    {{ in_name[0] }},
+    {{ out_name[0] }},
+    {{ name|upper }}_IN_BATCH,
+    {{ name|upper }}_IN_HEIGHT,
+    {{ name|upper }}_IN_WIDTH,
+    {{ name|upper }}_IN_CHANNELS,
+    {{ name|upper }}_OUT_HEIGHT,
+    {{ name|upper }}_OUT_WIDTH,
+    {{ name|upper }}_OUT_CHANNELS,
+    {{ name|upper }}_KERNEL_HEIGHT,
+    {{ name|upper }}_KERNEL_WIDTH,
+    {{ name|upper }}_STRIDE_Y,
+    {{ name|upper }}_STRIDE_X,
+    {{ name|upper }}_PADDING_Y,
+    {{ name|upper }}_PADDING_X,
+    {{ name|upper }}_POOLING_TYPE,
+    {{ name|upper }}_ACTIVATION);
+{% endif %}

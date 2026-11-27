@@ -1,0 +1,34 @@
+#include <stdio.h>
+
+#include "{{ include_forward_header }}"
+{% for header in input_headers %}
+#include "{{ header }}"
+{% endfor %}
+
+int main(void)
+{
+{%- for o in range(outputs_name | length) %}
+    {{ outputs_dtype[o] }}* {{ outputs_name[o] }}_out = NULL;
+{%- endfor %}
+
+    {{ func_name }}(
+{%- for i in range(inputs_name | length) %}
+        {{ inputs_name[i] }}{% if not loop.last %},{% endif %}
+{%- endfor %}
+{%- if outputs_name | length > 0 %},{% endif %}
+{%- for o in range(outputs_name | length) %}
+        &{{ outputs_name[o] }}_out{% if not loop.last %},{% endif %}
+{%- endfor %});
+
+{%- for o in range(outputs_name | length) %}
+    for (int i = 0; i < {{ output_sizes[o] }}; ++i) {
+        {% if outputs_dtype[o] in ["float", "double"] %}
+        printf("%f\n", (double){{ outputs_name[o] }}_out[i]);
+        {% else %}
+        printf("%d\n", (int){{ outputs_name[o] }}_out[i]);
+        {% endif %}
+    }
+{%- endfor %}
+
+    return 0;
+}

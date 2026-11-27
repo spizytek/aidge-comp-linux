@@ -1,5 +1,9 @@
 # Model Optimization Log — Ballé factorized encoder (q8, 64×64)
 
+> **Note for Linux/GitHub readers:** this log was recorded on the Windows
+> dual-boot session, so some paths show `E:\spaceviv\...`. On Linux use the
+> repo-relative paths (`tools/...`, `analysis/...`, `training/...`).
+>
 > **Repo:** `C:\Users\HP\Desktop\AIDGE\aidge-comp-linux` (friend's repo, branch `main`)
 > **Platform:** Windows, 2026-11-27
 > **Model:** `Model/bmshj2018_factorized_encoder.onnx` — CompressAI `bmshj2018_factorized`, quality 8, N=192, M=320

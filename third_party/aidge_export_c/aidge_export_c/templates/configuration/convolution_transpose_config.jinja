@@ -1,0 +1,38 @@
+#ifndef {{ name|upper }}_LAYER_H
+#define {{ name|upper }}_LAYER_H
+
+#include "utils/c/typedefs.h"
+
+#define {{ name|upper }}_IN_BATCH {{ in_batch[0] }}
+#define {{ name|upper }}_IN_CHANNELS {{ nb_channels }}
+#define {{ name|upper }}_IN_HEIGHT {{ in_height[0] }}
+#define {{ name|upper }}_IN_WIDTH {{ in_width[0] }}
+
+#define {{ name|upper }}_OUT_CHANNELS {{ nb_outputs }}
+#define {{ name|upper }}_OUT_HEIGHT {{ out_height[0] }}
+#define {{ name|upper }}_OUT_WIDTH {{ out_width[0] }}
+
+#define {{ name|upper }}_KERNEL_HEIGHT {{ kernel_dims[0] if kernel_dims|length > 1 else 1 }}
+#define {{ name|upper }}_KERNEL_WIDTH {{ kernel_dims[1] if kernel_dims|length > 1 else kernel_dims[0] }}
+#define {{ name|upper }}_STRIDE_Y {{ stride_dims[0] if stride_dims|length > 1 else 1 }}
+#define {{ name|upper }}_STRIDE_X {{ stride_dims[1] if stride_dims|length > 1 else stride_dims[0] }}
+#define {{ name|upper }}_DILATION_Y {{ dilation_dims[0] if dilation_dims|length > 1 else 1 }}
+#define {{ name|upper }}_DILATION_X {{ dilation_dims[1] if dilation_dims|length > 1 else dilation_dims[0] }}
+#define {{ name|upper }}_PADDING_TOP {{ padding[0] if padding|length > 2 else 0 }}
+#define {{ name|upper }}_PADDING_LEFT {{ padding[1] if padding|length > 2 else padding[0] }}
+#define {{ name|upper }}_PADDING_BOTTOM {{ padding[2] if padding|length > 2 else 0 }}
+#define {{ name|upper }}_PADDING_RIGHT {{ padding[3] if padding|length > 2 else padding[1] }}
+
+#define {{ name|upper }}_OUTPUT_0_MEM_OFFSET {{ mem_info_offset[0] | default(0, true) }}
+#define {{ name|upper }}_OUTPUT_0_MEM_SIZE {{ mem_info_size[0] | default(0, true) }}
+#define {{ name|upper }}_OUTPUT_0_MEM_STRIDE {{ mem_info_stride[0] | default(0, true) }}
+
+#define {{ name|upper }}_WEIGHTS_SIZE {{ weights_size }}
+#define {{ name|upper }}_BIASES_SIZE {{ biases_size }}
+{% if activation == "Rectifier" %}
+#define {{ name|upper }}_ACTIVATION EXPORT_C_ACT_RELU
+{% else %}
+#define {{ name|upper }}_ACTIVATION EXPORT_C_ACT_LINEAR
+{% endif %}
+
+#endif /* {{ name|upper }}_LAYER_H */

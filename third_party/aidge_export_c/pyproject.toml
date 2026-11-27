@@ -1,0 +1,22 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aidge_export_c"
+version = "0.6.0"
+description = "Aidge standalone C export backend (host target)"
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "EPL-2.0" }
+dependencies = [
+    "aidge_core>=0.10",
+    "jinja2",
+    "numpy",
+]
+
+[tool.setuptools.packages.find]
+include = ["aidge_export_c*"]
+
+[tool.setuptools.package-data]
+aidge_export_c = ["templates/**/*", "static/**/*"]
