@@ -1,0 +1,7 @@
+{{ out_cdtype[0] }}* {{ out_name[0] }} = ({{ out_cdtype[0] }}*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+for (int i = 0; i < {{ name|upper }}_INPUT_0_SIZE; ++i) {
+    float v = (float){{ in_name[0] }}[i];
+    v = v < {{ name|upper }}_MIN ? {{ name|upper }}_MIN : v;
+    v = v > {{ name|upper }}_MAX ? {{ name|upper }}_MAX : v;
+    {{ out_name[0] }}[i] = ({{ out_cdtype[0] }})v;
+}

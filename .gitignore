@@ -24,3 +24,5 @@ analysis/*.npy
 analysis/*.npz
 analysis/*.onnx
 analysis/smoke/
+analysis/*_c/
+analysis/ort_*/

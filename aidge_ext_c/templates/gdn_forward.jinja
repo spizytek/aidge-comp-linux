@@ -1,0 +1,22 @@
+{% if is_int8 %}
+float* {{ out_name[0] }} = (float*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_gdn_forward_int8(
+    {{ in_name[0] }},
+    {{ out_name[0] }},
+    {{ name }}_gamma,
+    {{ name }}_beta,
+    {{ name|upper }}_CHANNELS,
+    {{ name|upper }}_IN_HEIGHT,
+    {{ name|upper }}_IN_WIDTH,
+    {{ name|upper }}_IN_SCALE);
+{% else %}
+float* {{ out_name[0] }} = (float*)(mem_0 + {{ name|upper }}_OUTPUT_0_MEM_OFFSET);
+export_c_gdn_forward(
+    {{ in_name[0] }},
+    {{ out_name[0] }},
+    {{ name }}_gamma,
+    {{ name }}_beta,
+    {{ name|upper }}_CHANNELS,
+    {{ name|upper }}_IN_HEIGHT,
+    {{ name|upper }}_IN_WIDTH);
+{% endif %}

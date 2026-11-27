@@ -65,25 +65,38 @@ class ApproxGDN(nn.Module):
         self.register_buffer("ms", torch.tensor(ms, dtype=torch.float32))
 
     def forward(self, x: torch.Tensor) -> torch.Tensor:
-        z = F.conv2d(x * x, self.gamma, self.beta)
-
-        # clamp to [z0, zK] using ReLU only
+        norm = F.conv2d(x * x, self.gamma, self.beta)
         z0, zk = self.bp[0], self.bp[-1]
-        z = z0 + F.relu(z - z0)
-        z = zk - F.relu(zk - z)
+        tag = 0
+
+        def clamp_z(n: torch.Tensor) -> torch.Tensor:
+            # Fresh chain per consumer: AIDGE PTQ 0.10.1 fails on an Add that
+            # has several children ("cannot find precision" on its Scaling).
+            # The tag stops torch.onnx CSE from merging the identical chains;
+            # the 1e-6 shift is negligible for rsqrt (norm range 0.01..1e4).
+            nonlocal tag
+            tag += 1
+            z = z0 + F.relu(n + (-z0 + tag * 1e-6))
+            return zk + (-1.0) * F.relu(zk + (-1.0) * z)
+
+        # clamp to [z0, zK].  Add/Mul(-1)/ReLU only: no Sub scaling node.
+        z = clamp_z(norm)
 
         # piecewise-linear chord seed
-        r = self.ys[0] + self.ms[0] * (z - self.bp[0])
+        r = self.ys[0] + self.ms[0] * (z + (-self.bp[0]))
         for i in range(1, self.ms.numel()):
-            r = r + (self.ms[i] - self.ms[i - 1]) * F.relu(z - self.bp[i])
-        r = F.relu(r) + 1e-12
+            zi = clamp_z(norm)
+            r = r + (self.ms[i] - self.ms[i - 1]) * F.relu(
+                zi + (-self.bp[i]))
+        r = F.relu(r)  # no +eps needed: rsqrt only uses mul/add, never divides
 
         # Step-clamped Newton: keeps r positive and prevents divergence when
         # the seed is outside the Newton basin (large norm outliers).
         for _ in range(self.iters):
-            t = 3.0 - z * r * r
-            t = F.relu(t)              # lower clamp 0
-            t = 3.0 - F.relu(3.0 - t)  # upper clamp 3
+            zn = clamp_z(norm)
+            t = 3.0 + (-1.0) * (zn * r * r)
+            t = F.relu(t)                            # lower clamp 0
+            t = 3.0 + (-1.0) * F.relu(3.0 + (-1.0) * t)  # upper clamp 3
             r = 0.5 * r * t
 
         if self.inverse:      # IGDN: x * sqrt(z) = x * z * rsqrt(z)

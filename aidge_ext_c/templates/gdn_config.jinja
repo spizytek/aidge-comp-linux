@@ -1,0 +1,24 @@
+{#- GDN layer configuration (C) -#}
+#ifndef {{ name|upper }}_LAYER_H
+#define {{ name|upper }}_LAYER_H
+
+#include "utils/c/typedefs.h"
+#include "kernels/c/gdn.h"
+
+#define {{ name|upper }}_CHANNELS {{ channels }}
+#define {{ name|upper }}_IN_HEIGHT {{ in_dims[0][-2] }}
+#define {{ name|upper }}_IN_WIDTH {{ in_dims[0][-1] }}
+#define {{ name|upper }}_OUTPUT_0_MEM_OFFSET {{ mem_info_offset[0] | default(0, true) }}
+#define {{ name|upper }}_OUTPUT_0_MEM_SIZE {{ mem_info_size[0] | default(0, true) }}
+#define {{ name|upper }}_IS_INT8 {% if is_int8 %}1{% else %}0{% endif %}
+#define {{ name|upper }}_IN_SCALE {{ in_scale | default(1.0, true) }}
+
+static const float {{ name }}_gamma[{{ channels * channels }}] = {
+{{ gamma | join(', ') }}
+};
+
+static const float {{ name }}_beta[{{ channels }}] = {
+{{ beta | join(', ') }}
+};
+
+#endif /* {{ name|upper }}_LAYER_H */

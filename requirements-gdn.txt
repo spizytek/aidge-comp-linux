@@ -1,0 +1,15 @@
+# Runtime GDN unit operator
+aidge-core>=0.10
+aidge-backend-cpu>=0.10
+aidge-onnx>=0.10
+onnx
+
+# Optional: C export
+# aidge_export_c>=0.6
+
+# Optional: int8 PTQ (requires the GDN quantization patch + AIDGE rebuild)
+# aidge-quantization>=0.10
+
+# Optional: only for tools/build_gdn_unit_onnx.py
+# torch
+# compressai
