@@ -146,6 +146,7 @@ locod_test_encoder_model/ monolithic encoder C (reference; params.h ignored)
 aidge_ext_c/             proper AIDGE GDN/IGDN unit operator + C kernel
 third_party/aidge_export_c/  vendored AIDGE standalone C export backend
 examples/                GDN import-and-run example
+hw/gdn_demo/             GDN on PYNQ-Z2 bring-up demo (LoCod + instructions)
 tools/                   profiling, RD, int8 simulation, GDN ONNX builder
 training/                model surgery + Modal fine-tuning
 scripts/                 Linux setup/check scripts
